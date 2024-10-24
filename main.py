@@ -18,8 +18,9 @@ options = [ICON_MAIN, MAIN_IMAGE]
 st.logo(ICON_MAIN, size="medium", icon_image=MAIN_IMAGE)
 
 st.set_page_config(page_title="Voicebot")
-st.title('Voicebot with Waves API')
-st.caption("Generate high-quality AI-based speech from the text.")
+st.title('Voicebot for Documents')
+st.image("images/cover.png")
+st.caption("Generate Hyper-Realistic Speech for your Document with Low Latency Inference. See the pricing at [Waves API](https://waves.smallest.ai/)")
 
 AUDIO_DIR = "audio_output"
 SAMPLE_RATE = 16000  # The sample rate in Hz
@@ -73,13 +74,13 @@ def rag_from_pdf(pdf_path, db_path, query_str):
 
 def main():
     api_key = st.sidebar.text_input("Input the Waves API", type="password")
-    text = st.text_input("Enter the text you want to listen to")
-    files = st.file_uploader("Submit .txt/.pdf files only", type=['txt', 'pdf'])
-    query = st.text_input("Any additional commands such as (summarize the pdf) or (explain this like I am 5)")
+    text = st.text_input("Enter Any text you want to listen..")
+    files = st.file_uploader("Submit **.txt/.pdf** files only", type=['txt', 'pdf'])
+    query = st.text_input("Please enter the query; such as (summarize the pdf) or (explain this like I am 5)")
     submit_button = st.button("Submit")
 
     voice_id = st.sidebar.radio(
-        label="**Select the Voice Ids**",
+        label="**Select Any Voice Id**",
         options=[
             'Emily',
             'Jasmine',
