@@ -3,7 +3,8 @@ import uuid
 import os
 import wave
 import streamlit as st 
-
+import re
+import shutil
 # LangChain-related imports for document retrieval and AI agent
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -42,6 +43,7 @@ hf = HuggingFaceBgeEmbeddings(model_name=model_name, model_kwargs={"device": "cp
 def load_pdf_and_initialize_db(pdf_path, db_path):
     loader = PyPDFLoader(pdf_path)
     pages = loader.load()
+    st.info(pages[0].page_content)
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     chunks = text_splitter.split_documents(pages)
@@ -49,28 +51,41 @@ def load_pdf_and_initialize_db(pdf_path, db_path):
     db_chroma = Chroma.from_documents(chunks, hf, persist_directory=db_path)
     return db_chroma
 
+def clean_text(text):
+    # Remove non-printable characters (including control characters)
+    cleaned_text = ''.join(c for c in text if c.isprintable())
+    
+    # Optionally, remove any unwanted characters like extra newlines, tabs, etc.
+    cleaned_text = re.sub(r'[\n\t]+', ' ', cleaned_text).strip()
+    
+    return cleaned_text
+
+
 def rag_from_pdf(pdf_path, db_path, query_str):
     data = load_pdf_and_initialize_db(pdf_path, db_path)
     docs_chroma = data.similarity_search_with_score(query_str, k=5)
     context_text = "\n\n".join([doc.page_content for doc, _score in docs_chroma])
+    context_text = clean_text(context_text)
+    st.info(context_text)
+    docs_chroma.__delitem__(0)
 
     PROMPT_TEMPLATE = """
-            Using the context provided below, use the whole text, keep the sequence of the text proper.
-            Ensure that the response is amazing, almost like a storytelling and engages the audience. Give proper punctuations.
-            the context is as follows:
-            {context}
-            
-            Please respond to the following prompt based on the above context: {question}
-            Focus on creating an engaging story that flows naturally.
+    Using the context provided below, use the whole text, keep the sequence of the text proper.
+    Ensure that the response is amazing, but short and to the point. Give proper punctuations.
+    the context is as follows:
+    {context}
+    
+    Please respond to the following prompt based on the above context: {question}
+    Focus on creating an engaging short story that flows naturally.
     """
     prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
     prompt = prompt_template.format(context=context_text, question=query_str)
 
-    llm = HuggingFaceEndpoint(repo_id="HuggingFaceH4/zephyr-7b-beta", task="text-generation", max_new_tokens=512, do_sample=False, repetition_penalty=1.03)
+    llm = HuggingFaceEndpoint(repo_id="HuggingFaceH4/zephyr-7b-beta", task="text-generation", max_new_tokens=1024, do_sample=False, repetition_penalty=1.03)
     chat_model = ChatHuggingFace(llm=llm)
     response_text = chat_model.predict(prompt)
 
-    return response_text
+    return str(response_text).strip()
 
 def main():
     api_key = st.sidebar.text_input("Input the Waves API", type="password")
