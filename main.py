@@ -5,7 +5,7 @@ import wave
 import streamlit as st 
 
 # LangChain-related imports for document retrieval and AI agent
-from langchain_core.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import HuggingFaceBgeEmbeddings 
 from langchain.vectorstores import Chroma
