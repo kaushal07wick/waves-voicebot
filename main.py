@@ -67,7 +67,6 @@ def rag_from_pdf(pdf_path, db_path, query_str):
     context_text = "\n\n".join([doc.page_content for doc, _score in docs_chroma])
     context_text = clean_text(context_text)
     st.info(context_text)
-    docs_chroma.__delitem__(0)
 
     PROMPT_TEMPLATE = """
     Using the context provided below, use the whole text, keep the sequence of the text proper.
