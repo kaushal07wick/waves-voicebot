@@ -1,5 +1,5 @@
 # Voicebot with Waves API
-![cover]()
+![cover](https://raw.githubusercontent.com/kaushal07wick/waves-voicebot/refs/heads/master/images/cover.png)
 ## Overview
 
 The Voicebot application is designed to convert text and PDF content into high-quality AI-generated speech using the Waves API. By leveraging the power of LangChain and various NLP techniques, this application allows users to interactively upload documents or input text to receive audio outputs in different voice profiles.
