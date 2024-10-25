@@ -4,7 +4,11 @@ import os
 import wave
 import streamlit as st 
 import re
-import shutil
+
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 # LangChain-related imports for document retrieval and AI agent
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
