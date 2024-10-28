@@ -93,7 +93,7 @@ def rag_from_pdf(pdf_path, db_path, query_str):
     chat_model = ChatHuggingFace(llm=llm)
     response_text = chat_model.predict(prompt)
 
-    return str(response_text).strip()
+    return str(response_text).lstrip()
 
 def main():
     api_key = st.sidebar.text_input("Input the Waves API", type="password")
