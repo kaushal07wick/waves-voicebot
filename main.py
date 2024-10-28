@@ -4,6 +4,7 @@ import os
 import wave
 import streamlit as st 
 import re
+import getpass
 
 __import__('pysqlite3')
 import sys
@@ -21,6 +22,10 @@ ICON_MAIN = "images/s.png"
 MAIN_IMAGE = "images/s.png"
 options = [ICON_MAIN, MAIN_IMAGE]
 st.logo(ICON_MAIN, size="medium", icon_image=MAIN_IMAGE)
+
+# Load API keys and paths
+hf_token = st.secrets["HUGGINGFACE_TOKEN"]["token"]
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
 
 st.set_page_config(page_title="Voicebot")
 st.title('Voicebot for Documents')
